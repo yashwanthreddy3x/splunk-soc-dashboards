@@ -1,0 +1,5 @@
+index=linux_logs sourcetype=ssh_logs action=failure
+| bucket _time span=5m
+| stats count by src_ip, user, _time
+| where count > 10
+| sort -count

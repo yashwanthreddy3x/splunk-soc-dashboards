@@ -1,0 +1,3 @@
+index=web_logs sourcetype=apache_error
+| stats count by status, host
+| sort -count

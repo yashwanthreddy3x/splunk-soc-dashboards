@@ -1,0 +1,4 @@
+index=web_logs sourcetype=apache_access
+| search uri_path="*/wp-admin*" OR uri_path="*/shell*" OR status=404
+| stats count by src_ip, uri_path, status
+| sort -count
