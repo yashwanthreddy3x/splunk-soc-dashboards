@@ -1,135 +1,228 @@
-**SOC Dashboards – Splunk (SSH & Web Threat Detection)
-**
-This project demonstrates hands-on SIEM experience using Splunk to detect and investigate SSH brute-force attempts, suspicious web traffic, and attacker behaviors. The dashboards provide actionable insights for SOC analysts during real-time threat monitoring and incident response.
+# 🛡 SOC Dashboards – Splunk (SSH & Web Threat Detection)
 
-**Key Capabilities
-**
-Continuous monitoring of SSH authentication (failed/successful logins, sudo misuse, abnormal login spikes)
 
-Automated brute-force detection based on IP frequency, login failures, and time thresholds
 
-Apache web access analysis to spot malicious URIs, enumeration attempts, and bot scraping behaviors
+This repository demonstrates hands-on SIEM experience using Splunk to detect and investigate SSH brute-force attempts, suspicious Apache web traffic, and attacker behaviors. The dashboards provide actionable threat intelligence for SOC analysts performing real-time monitoring, anomaly detection, and incident response.
 
-Geo-mapping attacker IPs to trace global threat origins and identify high-risk regions
 
-Time-based event correlation to support evidence collection and forensic investigation
 
-IOC-based pivoting to quickly investigate suspicious activity
+---
 
-**Use Cases
-**
-Detect SSH brute-force attacks
 
-Identify credential guessing attempts
 
-Track enumeration of admin directories/web endpoints
+## 🔍 Key Capabilities
 
-Trace suspicious incoming traffic sources
 
-Support incident reporting with dashboard-backed evidence
 
-** Dashboard Panels (What You Can See)
-**
-**SSH Dashboard:
-**
-Failed vs Successful login charts
+- Monitor SSH authentication (successful/failed logins, abnormal login spikes, sudo usage)
 
-Login anomaly patterns (sudden spikes)
+- Detect SSH brute-force attacks using time-frequency thresholds and attacker IP analysis
 
-Username-based incorrect logins
+- Analyze Apache HTTP logs to detect suspicious URIs, enumeration attempts, and error patterns
 
-Source IP aggregation and ranking
+- Trace attacker IP origins globally using geo-location mapping
 
-Alert conditions for brute-force patterns
+- Perform time-based correlation to support incident reporting and RCA
 
-Command execution monitoring with sudo tracking
+- Pivot investigations using IOC-based filtering for faster triage
 
-**Apache Web Dashboard:
-**
-Suspicious URI access (admin panels, shell paths, probing attempts)
 
-HTTP error anomaly mapping (403, 404, 500 trends)
 
-Most frequent IP sources
+---
 
-Request method abuse (GET/POST noise)
 
-Geo-location mapping of attacker IPs
 
-**Repository Structure
-**
+## 🧩 Use Cases
+
+
+
+✔ SSH brute-force detection  
+
+✔ Enumeration and reconnaissance tracking (Apache)  
+
+✔ Identifying malicious IP sources  
+
+✔ Real-time monitoring for SOC alerting  
+
+✔ Supporting evidence for incident reports  
+
+
+
+---
+
+
+
+## 📷 Dashboard Panels Overview
+
+
+
+### 🔐 SSH Dashboard
+
+- Failed vs Successful logins
+
+- Source IP attack frequency trends
+
+- Username anomalies and brute-force tracing
+
+- Sudo misuse monitoring
+
+- Time-series spike detection
+
+
+
+### 🌐 Web Traffic (Apache) Dashboard
+
+- Suspicious URI access detection (404/403 enumeration)
+
+- HTTP status code error analytics
+
+- Client IP request frequency monitoring
+
+- Behavioral anomaly visualization
+
+- Global attack source mapping
+
+
+
+---
+
+
+
+## 📁 Repository Structure
+
+
 splunk-soc-dashboards/
+
 │
-├── dashboards/          # Splunk dashboard screenshots (SSH, Apache, attack maps)
-├── spl_queries/         # SPL queries for detection, anomaly tracking, investigation
-├── sample_logs/         # Sample SSH & Apache logs (sanitized for learning)
-└── documentation/       # (Optional) Attack timeline reports, case study PDFs
 
-**Example SPL Queries
-**
-**SSH Failed Login Overview
-**
+├── dashboards/          # Splunk dashboard screenshots (SSH, Apache, Geo maps)
+
+├── spl_queries/         # SPL queries for detection and analysis
+
+├── sample_logs/         # Sanitized SSH & Apache log samples
+
+└── documentation/       # (Optional) Case-study PDFs and SOC reports
+
+---
+
+
+## 🧪 Example SPL Queries
+
+## 🟦 SSH Failed Login Overview
+
 index=linux_logs sourcetype=ssh_logs action=failure
+
 | stats count by src_ip, user, host
+
 | sort -count
 
 
-**SSH Brute-Force Detection
-**
+
+## 🟦 SSH Brute-force Attempt Detection
+
 index=linux_logs sourcetype=ssh_logs action=failure
+
 | bucket _time span=5m
+
 | stats count by src_ip, user, _time
+
 | where count > 10
+
 | sort -count
 
 
-**Apache Suspicious URI Monitoring
-**
+
+## 🟦 Apache Suspicious URI Access
+
 index=web_logs sourcetype=apache_access
+
 | search uri_path="*/wp-admin*" OR uri_path="*/shell*" OR status=404
+
 | stats count by src_ip, uri_path, status
+
 | sort -count
 
+---
 
-**Apache Error Frequency Analysis
-**
-index=web_logs sourcetype=apache_error
-| stats count by status, host
-| sort -count
+## 🧭 SOC Workflow / Investigation Path
 
-**SOC Workflow Diagram
-**
-Log Collection (SSH + Apache)
-       ↓
+Logs (SSH + Apache)
+
+↓
+
 Splunk Indexing
-       ↓
-Dashboard Visualization & Alerting
-       ↓
-Incident Investigation & IOC Pivoting
-       ↓
-Evidence Reporting & Response
 
-**Outcome & Purpose
-**
-This repository highlights hands-on cybersecurity experience including:
+↓
 
-SIEM operations (Splunk)
+Dashboards + Alerts
 
-Alert tuning and detection logic
+↓
 
-SSH & web log investigation techniques
+Analyst Investigation (Correlation + IOC Pivoting)
 
-Threat hunting methodology
+↓
 
-Evidence-based incident reporting
+Incident Documentation & Response
 
-Designed to demonstrate readiness for SOC Analyst, Blue Team, and Threat Detection roles.
+---
 
-**Author
-**
-Yashwanth Reddy
-Cybersecurity SOC Analyst Aspirant | SIEM | Threat Hunting | Blue Team
+## 🎯 Project Purpose
 
-**Notes
-**
-More dashboards, logs, and case study documentation will be added as the SOC environment evolves.
+
+
+- This project highlights practical SOC capabilities including:
+
+
+
+- SIEM operations using Splunk
+
+
+
+- Threat detection based on SSH and web logs
+
+
+
+- Real-time dashboards for actionable insights
+
+
+
+- Event correlation and anomaly spotting
+
+
+
+- Blue Team methodology for incident response
+
+---
+
+## 🚀 Future Enhancements
+
+
+
+- Automated alert notifications (Slack/Email integration)
+
+
+
+- Threat intelligence enrichment (AbuseIPDB/OTX)
+
+
+
+- MITRE ATT&CK mapping visualization
+
+
+
+- Case-study PDFs under /documentation
+
+---
+
+## 🙌 Contribution
+
+
+
+Suggestions, improvements, and pull requests are welcome!
+
+
+
+
+
+
+
